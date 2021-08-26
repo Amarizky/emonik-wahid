@@ -1,0 +1,42 @@
+.imgprofile{
+    height: 20%;
+    width: 20%;
+}
+
+
+.imgicons{
+    height: 70%;
+    width: 30%;
+    margin: auto;
+    margin-right: 25px;
+}
+
+
+@media (min-width: 768px)
+{
+    .imgicons{
+        height: 70%;
+        width: 20%;
+        margin: auto;
+        margin-right: 25px;
+    }
+    /* .imgprofile{
+        height: 25%;
+        width: 25%;
+    } */
+}
+
+@media (min-width: 375px)
+{
+    .imgicons{
+        height: 70%;
+        width: 20%;
+        margin: auto;
+        margin-right: 25px;
+    }
+    /* .imgprofile{
+        height: 25%;
+        width: 25%;
+    } */
+   
+}

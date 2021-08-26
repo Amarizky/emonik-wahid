@@ -1,0 +1,18 @@
+{
+	"description" : "The CodeIgniter Application with Composer",
+	"type": "project",
+	"homepage": "https://codeigniter.com",
+	"license": "MIT",
+	"require": {
+		"php": ">=5.3.2",
+		"mpdf/mpdf": "^7.1",
+		"codeigniter/framework": "3.1.*",
+		"phpoffice/phpspreadsheet": "^1.17"
+	},
+	"suggest": {
+		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
+	},
+	"require-dev": {
+		"mikey179/vfsstream": "1.1.*"
+	}
+}
