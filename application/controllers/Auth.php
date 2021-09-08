@@ -1,8 +1,9 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Auth extends CI_Controller {
+class Auth extends CI_Controller
+{
 
 	public function __construct()
 	{
@@ -14,11 +15,11 @@ class Auth extends CI_Controller {
 	{
 
 		$redirect = $this->check_role();
-		if($redirect != FALSE){
+		if ($redirect != FALSE) {
 			redirect($redirect);
 		}
 		$data['message'] = "";
-		if($flag == 'logout'){
+		if ($flag == 'logout') {
 			$data['message'] = array(
 				'message' => 'Kamu Berhasil Logout',
 				'title' => 'Info',
@@ -27,20 +28,20 @@ class Auth extends CI_Controller {
 				'delay' => '5000'
 			);
 		}
-		
+
 		// if not, load login form
-		$data['title'] = APP_NAME ;
-		$data['menu'] = "Login" ;
+		$data['title'] = APP_NAME;
+		$data['menu'] = "Login";
 		$data['action'] = base_url('auth/login_process');
-		
+
 		//csrf init
 		$csrf = array(
-				'name' => $this->security->get_csrf_token_name(),
-				'hash' => $this->security->get_csrf_hash()
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
 		);
 		$data['csrf'] = $csrf;
 
-		$this->auth_layout->load('layout/auth/v_layout','pages/auth/v_login_simple', $data);
+		$this->auth_layout->load('layout/auth/v_layout', 'pages/auth/v_login_simple', $data);
 	}
 
 	// process user's submission from login form
@@ -56,14 +57,13 @@ class Auth extends CI_Controller {
 
 		//csrf init
 		$csrf = array(
-				'name' => $this->security->get_csrf_token_name(),
-				'hash' => $this->security->get_csrf_hash()
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
 		);
 		$data['csrf'] = $csrf;
 
 		// check whether validation ends up with no error
-		if($this->form_validation->run() === TRUE)
-		{
+		if ($this->form_validation->run() === TRUE) {
 
 			// get input from user
 			$input = $this->input->post(null, true);
@@ -71,12 +71,11 @@ class Auth extends CI_Controller {
 			$username = $input['username'];
 			$password = $input['password'];
 
-			
+
 			// check login
 			$login = $this->check_login($username, $password);
 
-			if($login)
-			{
+			if ($login) {
 				//check rule from table
 				$redirect = $this->check_role();
 
@@ -86,7 +85,6 @@ class Auth extends CI_Controller {
 					'csrf' => $csrf,
 					'return_url' => site_url($redirect)
 				);
-
 			} else {
 				$response = array(
 					'status' => 0,
@@ -104,7 +102,6 @@ class Auth extends CI_Controller {
 				'message' => strip_tags(validation_errors()),
 				'return_url' => '#'
 			);
-
 		}
 
 		echo json_encode($response);
@@ -113,50 +110,41 @@ class Auth extends CI_Controller {
 	// method for checking login is valid or not
 	public function check_login($username = null, $password = null)
 	{
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/rest-emonik/index.php/apilogin/check_login");
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+			'username' => $username,
+			'password' => $password
+		));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'emonik-api-key: restapiemonik'
+		]);
 
-		// get data from database based on user input
-		$data = $this->crud->get_where('users', '*', array('username' => $username, 'is_active' => '1'))->row();
-		
-		//check username 
-		if(isset($data->username))
-		{
-			if (password_verify($password, $data->password)) {
-				$role = $this->crud->get_where('roles', '*', array('roleid' => $data->roleid))->row();
-				// set session
-				$session = array(
-					'logged_in' => true,
-					'id' => $data->id,
-					'email' => $data->email,
-					'username' => $data->username,
-					'is_active' => $data->is_active,
-					'name' => $data->name,
-					'avatar' => $data->avatar,
-					'roleid' => $data->roleid,
-					'rolename' => $role->rolename,
-					'roledesc' => $role->desc,
-				);
-				$this->session->set_userdata($session);
-				$this->crud->update('users', ['last_login' => date('Y-m-d H:i:s')], ['username' => $data->username]);
+		$server_output = curl_exec($ch);
+		curl_close($ch);
 
-				return true;
-			} else {
-				// login failed
-				return false;
-			}
-		}else {
-            return false;
+		$session = json_decode($server_output, true);
+
+		if ($session['logged_in'] == true) {
+			$this->session->set_userdata($session);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
-	public function check_role(){
-		if($this->session->userdata('rolename')) {
-			if($this->session->userdata('rolename') == "superadmin" || $this->session->userdata('rolename') == "admin") {
-				return $this->session->userdata('rolename').'/dashboard';
-			}else{
+	public function check_role()
+	{
+		if ($this->session->userdata('rolename')) {
+			if ($this->session->userdata('rolename') == "superadmin" || $this->session->userdata('rolename') == "admin") {
+				return $this->session->userdata('rolename') . '/dashboard';
+			} else {
 				if ($this->session->userdata('rolename') == "user")
-					return $this->session->userdata('rolename').'/dashboard';
+					return $this->session->userdata('rolename') . '/dashboard';
 			}
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -165,6 +153,5 @@ class Auth extends CI_Controller {
 	{
 		$this->session->sess_destroy();
 		redirect(site_url('auth/index/logout'));
-    }
-
+	}
 }
