@@ -312,7 +312,7 @@ class Bahanbaku extends CI_Controller
 		$data['label'] = $label;
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "https://kahftekno.com/rest-emonik/index.php/apibahanbaku/stokbahan1");
+		curl_setopt($ch, CURLOPT_URL, "https://kahftekno.com/rest-emonik/index.php/apibahanbaku/" . $label);
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

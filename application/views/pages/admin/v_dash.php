@@ -25,9 +25,13 @@
         <div class="col-xl-12">
             <div class="card card-body">
                 <canvas id="dashboardChart"></canvas>
-                <?php foreach ($dataset['realLabel'] as $label) : ?>
-                    <a href="Bahanbaku/details/<?= $label; ?>" class="btn btn-primary"><?= $label; ?></a>
-                <?php endforeach; ?>
+                <div class="row">
+                    <?php foreach ($dataset['realLabel'] as $label) : ?>
+                        <div class="col-3 text-center my-2">
+                            <a href="Bahanbaku/details/<?= $label; ?>" class="btn btn-primary w-75"><?= $label; ?></a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
         <div class="col-sm-6 col-xl-3">
