@@ -24,15 +24,22 @@
         </div>
         <div class="col-xl-12">
             <div class="card card-body">
-                <canvas id="dashboardChart"></canvas>
+                <canvas id="dashboardChart1"></canvas>
                 <div class="row">
-                    <?php foreach ($dataset['realLabel'] as $label) : ?>
+                    <?php foreach ($chart1['realLabel'] as $label) : ?>
                         <div class="col-3 text-center my-2">
                             <a href="Bahanbaku/details/<?= $label; ?>" class="btn btn-primary w-75"><?= $label; ?></a>
                         </div>
                     <?php endforeach; ?>
                 </div>
             </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="card card-body">
+                <canvas id="dashboardChart2"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
         </div>
         <div class="col-sm-6 col-xl-3">
             <a href="<?= site_url(current_role() . '/bahanbaku'); ?>" title="See Detail">
@@ -70,7 +77,7 @@
                     <div class="media">
                         <div class="media-body">
                             <h3 class="font-weight-semibold text-dark mb-0"><?= @$total_orgs; ?></h3>
-                            <span class=" font-size-sm text-muted">produk Mitra</span>
+                            <span class=" font-size-sm text-muted">Produk Mitra</span>
                         </div>
                         <div class="ml-3 align-self-center">
                             <i class="icon-briefcase icon-3x text-primary-400"></i>
@@ -98,12 +105,12 @@
 </div>
 
 <script>
-    const labels = [<?= $dataset['labels']; ?>];
+    const labels = [<?= $chart1['labels']; ?>];
     const data = {
         labels: labels,
         datasets: [{
-            label: 'Data Bahan Baku Mitra <?= ucwords($dataset['mitra']); ?> (<?= $dataset['satuan']; ?>)',
-            data: [<?= $dataset['data']; ?>],
+            label: 'Data Bahan Baku Mitra <?= ucwords($chart1['mitra']); ?> (<?= $chart1['satuan']; ?>)',
+            data: [<?= $chart1['data']; ?>],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
@@ -127,16 +134,40 @@
     };
 
     var myChart = new Chart(
-        document.getElementById('dashboardChart'), {
+        document.getElementById('dashboardChart1'), {
             type: 'bar',
             data: data,
             options: {
+                responsive: true,
                 scales: {
                     y: {
                         beginAtZero: true
                     }
                 }
             },
+        }
+    )
+
+
+    const data2 = {
+        labels: [<?= $chart2['labels']; ?>],
+        datasets: [{
+            label: 'Data Produksi',
+            data: [<?= $chart2['data']; ?>],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    }
+
+    var myChart2 = new Chart(
+        document.getElementById('dashboardChart2'), {
+            type: 'doughnut',
+            data: data2,
+            responsive: true
         }
     )
 </script>
