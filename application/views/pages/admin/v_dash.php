@@ -26,17 +26,26 @@
             <div class="card card-body">
                 <canvas id="dashboardChart1"></canvas>
                 <div class="row">
-                    <?php foreach ($chart1['realLabel'] as $label) : ?>
+                    <?php for ($i = 0; $i < count($chart1['bLabels']); $i++) : ?>
+                        <?php $label = $chart1['bLabels'][$i]; ?>
+                        <?php $link = $chart1['bLinks'][$i]; ?>
                         <div class="col-3 text-center my-2">
-                            <a href="Bahanbaku/details/<?= $label; ?>" class="btn btn-primary w-75"><?= $label; ?></a>
+                            <a href="Bahanbaku/details/<?= $link; ?>" class="btn btn-primary w-75"><?= $label; ?></a>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endfor; ?>
                 </div>
             </div>
         </div>
         <div class="col-sm-12 col-xl-6">
             <div class="card card-body">
                 <canvas id="dashboardChart2"></canvas>
+                <div class="row">
+                    <?php foreach ($chart2['bLabels'] as $label) : ?>
+                        <div class="col text-center my-2">
+                            <a href="Bahanbaku/detailproduksi/<?= $label; ?>" class="btn btn-primary w-75"><?= ucwords($label); ?></a>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
         <div class="col-sm-12 col-xl-6">

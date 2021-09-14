@@ -37,11 +37,15 @@ class Dashboard extends CI_Controller
 		curl_close($ch);
 		$response = json_decode($server_output, true);
 
+		// print_r(json_encode($response));
+		// die();
+
 		foreach ($response['data'][0] as $k => $v) {
 			if (substr($k, 0, 5) === "bahan") {
+				$data['chart1']['bLabels'][] = ucwords($v);
 				$data['chart1']['labels'][] = ucwords($v);
 			} else if (substr($k, 0, 9) === "stokbahan") {
-				$data['chart1']['realLabel'][] = $k;
+				$data['chart1']['bLinks'][] = $k;
 				$data['chart1']['data'][] = $v;
 			} else if (substr($k, 0, 7) === "satuan") {
 				$data['chart1']['satuan'] = $v;
@@ -75,6 +79,7 @@ class Dashboard extends CI_Controller
 			}
 		}
 
+		$data['chart2']['bLabels'] = $data['chart2']['labels'];
 		$data['chart2']['labels'] = '"' . implode('","', $data['chart2']['labels']) . '"';
 		$data['chart2']['data'] = implode(',', $data['chart2']['data']);
 

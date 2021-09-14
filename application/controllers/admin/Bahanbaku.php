@@ -330,4 +330,40 @@ class Bahanbaku extends CI_Controller
 
 		$this->panel_layout->load('layout/panel/v_layout', 'pages/' . $this->rolename . '/' . $this->menu_alias . '/v_detail_bahanbaku', $data);
 	}
+
+	function detailproduksi($label)
+	{
+		$data['title'] = $this->menu;
+		$data['sub_title'] = 'Data';
+		$data['menu'] = $this->menu;
+		$data['menu_alias'] = $this->menu_alias;
+		$data['desc_menu'] = "";
+		$data['sub_menu'] = "Edit";
+		$data['icon'] = $this->icon;
+		$data['label'] = $label;
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://kahftekno.com/rest-emonik/index.php/apiproduksi");
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'emonik-api-key: restapiemonik'
+		]);
+
+		$server_output = curl_exec($ch);
+		curl_close($ch);
+
+		$response = json_decode($server_output, true);
+
+		foreach ($response['data'] as $key) {
+			if ($key['kode_produksi'] == $label) {
+				$data['nama'] = $key['kode_produksi'];
+				$data['jumlah'] = $key['jumlah_produksi'];
+				break;
+			}
+		}
+
+		$this->panel_layout->load('layout/panel/v_layout', 'pages/' . $this->rolename . '/' . $this->menu_alias . '/v_detail_produksi', $data);
+	}
 }
