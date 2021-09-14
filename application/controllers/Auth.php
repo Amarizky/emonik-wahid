@@ -111,7 +111,7 @@ class Auth extends CI_Controller
 	public function check_login($username = null, $password = null)
 	{
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/rest-emonik/index.php/apilogin/check_login");
+		curl_setopt($ch, CURLOPT_URL, "http://localhost/rest-emonik/index.php/apilogin/check_login");
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, array(
 			'username' => $username,
