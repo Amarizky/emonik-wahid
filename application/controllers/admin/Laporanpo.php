@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Bahanbaku extends CI_Controller
+class Laporanpo extends CI_Controller
 {
 
 	public $rolename = "admin";
 	public $icon = "icon-users";
-	public $menu = "bahanbaku";
-	public $menu_alias = "bahanbaku";
+	public $menu = "laporanpo";
+	public $menu_alias = "laporanpo";
 
 	public function __construct()
 	{
@@ -21,9 +21,9 @@ class Bahanbaku extends CI_Controller
 
 	public function index($page = 'List')
 	{
-		$data['title'] = "Bahan Baku Mitra ";
+		$data['title'] = "Laporan Order";
 		$data['sub_title'] = 'All Data';
-		$data['menu'] = "Bahan Baku Mitra";
+		$data['menu'] = "Laporan Order";
 		$data['menu_alias'] = $this->menu_alias;
 		$data['desc_menu'] = "";
 		$data['sub_menu'] = $page;
@@ -41,7 +41,7 @@ class Bahanbaku extends CI_Controller
 
 		// request data ke api
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apibahanbaku');
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apilaporanpo');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			'emonik-api-key: restapiemonik'
 		));
@@ -74,20 +74,20 @@ class Bahanbaku extends CI_Controller
 
 		// request data ke api
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apibahanbaku');
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apilaporanpo');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			'emonik-api-key: restapiemonik'
 		));
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, [
-			'mitra' => $kode
+			'no_po' => $kode
 		]);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		$result = json_decode(curl_exec($ch))->data;
 
 		foreach ($result as $row) {
-			if ($row->mitra === $kode) {
+			if ($row->no_po === $kode) {
 				$data['row'] = $row;
 				break;
 			}
@@ -136,58 +136,19 @@ class Bahanbaku extends CI_Controller
 		$input = $this->input->post(null, true);
 
 		$data = [
-
+			'no_po' => $input['no_po'],
 			'mitra' => $input['mitra'],
-			'bahan1' => $input['bahan1'],
-			'bahan2' => $input['bahan2'],
-			'bahan3' => $input['bahan3'],
-			'bahan4' => $input['bahan4'],
-			'bahan5' => $input['bahan5'],
-			'bahan6' => $input['bahan6'],
-			'bahan7' => $input['bahan7'],
-			'stokbahan1' => $input['stokbahan1'],
-			'stokbahan2' => $input['stokbahan2'],
-			'stokbahan3' => $input['stokbahan3'],
-			'stokbahan4' => $input['stokbahan4'],
-			'stokbahan5' => $input['stokbahan5'],
-			'stokbahan6' => $input['stokbahan6'],
-			'stokbahan7' => $input['stokbahan7']
+			'pengiriman' => $input['pengiriman'],
+			'bisa_kirim' => $input['bisa_kirim'],
+			'diterima' => $input['diterima'],
+
 		];
 
 		if (!empty($input['is_reset'])) {
 			$data['password'] = password_hash(DEFAULT_PASS, PASSWORD_BCRYPT);
 		}
 
-		//check apakah upload avatar?
-		if (isset($_FILES['avatar']['name']) && !empty($_FILES['avatar']['name'])) {
-			$config['upload_path']          =  FCPATH . 'assets/avatar/';
-			$config['allowed_types']        =  'jpg|jpeg|png|JPG|JPEG|PNG';
-			$config['encrypt_name']         =  TRUE;
-			$config['file_ext_tolower']     =  TRUE;
-			$config['detect_mime']			=  TRUE;
-
-			$this->upload->initialize($config);
-			if ($this->upload->do_upload('avatar')) {
-				$file_data = $this->upload->data();
-				// Resize Image
-				if ($file_data['file_size'] > 1024) {
-					resize_avatar('', $file_data['file_name']);
-				}
-				$file_name = $file_data['file_name'];
-				$data['avatar'] = $file_name;
-			} else {
-				$response = array(
-					'status' => 0,
-					'message' => 'Error upload. Detail: ' . $this->upload->display_errors(),
-					'return_url' => '#',
-					'csrf' => $csrf
-				);
-				echo json_encode($response);
-				die();
-			}
-		}
-
-		$update = $this->crud->update('users', $data, ['id' => $kode]);
+		$update = $this->crud->update('diterima', $data, ['id' => $kode]);
 		if ($update) {
 			$response = array(
 				'status' => 1,
@@ -223,27 +184,17 @@ class Bahanbaku extends CI_Controller
 		$input = $this->input->post(null, true);
 
 		$data = [
-
+			'no_po' => $input['no_po'],
 			'mitra' => $input['mitra'],
-			'bahan1' => $input['bahan1'],
-			'bahan2' => $input['bahan2'],
-			'bahan3' => $input['bahan3'],
-			'bahan4' => $input['bahan4'],
-			'bahan5' => $input['bahan5'],
-			'bahan6' => $input['bahan6'],
-			'bahan7' => $input['bahan7'],
-			'stokbahan1' => $input['stokbahan1'],
-			'stokbahan2' => $input['stokbahan2'],
-			'stokbahan3' => $input['stokbahan3'],
-			'stokbahan4' => $input['stokbahan4'],
-			'stokbahan5' => $input['stokbahan5'],
-			'stokbahan6' => $input['stokbahan6'],
-			'stokbahan7' => $input['stokbahan7']
+			'pengiriman' => $input['pengiriman'],
+			'jumlah' => $input['jumlah'],
+			'bisa_kirim' => $input['bisa_kirim'],
+			'diterima' => $input['diterima'],
 		];
 
-		// cek kode_produk udah ada belon 
+		// cek kode_po udah ada belon 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apibahanbaku');
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apilaporanpo');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			'emonik-api-key: restapiemonik'
 		));
@@ -253,10 +204,10 @@ class Bahanbaku extends CI_Controller
 		$result = json_decode(curl_exec($ch))->data;
 
 		foreach ($result as $row) {
-			if ($row->mitra === $data['mitra']) {
+			if ($row->no_po === $data['no_po']) {
 				$response = array(
 					'status' => 0,
-					'message' => 'mitra sudah terdaftar',
+					'message' => 'Kode po sudah terdaftar',
 					'return_url' => '#',
 					'csrf' => $csrf
 				);
@@ -268,7 +219,7 @@ class Bahanbaku extends CI_Controller
 
 		// insert data
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apibahanbaku');
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apilaporanpo');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			'emonik-api-key: restapiemonik'
 		));

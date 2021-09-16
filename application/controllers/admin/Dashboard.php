@@ -37,25 +37,26 @@ class Dashboard extends CI_Controller
 		curl_close($ch);
 		$response = json_decode($server_output, true);
 
-		// print_r(json_encode($response));
-		// die();
+		$bahan = [];
 
-		foreach ($response['data'][0] as $k => $v) {
-			if (substr($k, 0, 5) === "bahan") {
-				$data['chart1']['bLabels'][] = ucwords($v);
-				$data['chart1']['labels'][] = ucwords($v);
-			} else if (substr($k, 0, 9) === "stokbahan") {
-				$data['chart1']['bLinks'][] = $k;
-				$data['chart1']['data'][] = $v;
-			} else if (substr($k, 0, 7) === "satuan") {
-				$data['chart1']['satuan'] = $v;
-			} else if (substr($k, 0, 5) === "mitra") {
-				$data['chart1']['mitra'] = $v;
-			}
+		foreach ($response['data'] as $key) {
+			@$bahan[$key['bahan1']] += $key['stokbahan1'];
+			@$bahan[$key['bahan2']] += $key['stokbahan2'];
+			@$bahan[$key['bahan3']] += $key['stokbahan3'];
+			@$bahan[$key['bahan4']] += $key['stokbahan4'];
+			@$bahan[$key['bahan5']] += $key['stokbahan5'];
+			@$bahan[$key['bahan6']] += $key['stokbahan6'];
+			@$bahan[$key['bahan7']] += $key['stokbahan7'];
 		}
 
-		$data['chart1']['labels'] = '"' . implode('","', $data['chart1']['labels']) . '"';
-		$data['chart1']['data'] = implode(',', $data['chart1']['data']);
+		$i = 1;
+		foreach ($bahan as $k => $v) {
+			$data['chart1']['labels'][] = ucwords($k);
+			$data['chart1']['bLabels'][] = ucwords($k);
+			$data['chart1']['data'][] = ucwords($v);
+			$data['chart1']['bLinks'][] = 'stokbahan' . $i;
+			$i++;
+		}
 
 
 		//ambil data dari api (apiproduksi)

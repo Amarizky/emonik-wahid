@@ -30,7 +30,7 @@
                         <?php $label = $chart1['bLabels'][$i]; ?>
                         <?php $link = $chart1['bLinks'][$i]; ?>
                         <div class="col-3 text-center my-2">
-                            <a href="Bahanbaku/details/<?= $link; ?>" class="btn btn-primary w-75"><?= $label; ?></a>
+                            <a href="Produk/details/<?= $link; ?>" class="btn btn-primary w-75"><?= $label; ?></a>
                         </div>
                     <?php endfor; ?>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="row">
                     <?php foreach ($chart2['bLabels'] as $label) : ?>
                         <div class="col text-center my-2">
-                            <a href="Bahanbaku/detailproduksi/<?= $label; ?>" class="btn btn-primary w-75"><?= ucwords($label); ?></a>
+                            <a href="Produk/detailproduksi/<?= $label; ?>" class="btn btn-primary w-75"><?= ucwords($label); ?></a>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -114,12 +114,12 @@
 </div>
 
 <script>
-    const labels = [<?= $chart1['labels']; ?>];
+    const labels = [<?= '"' . implode('","', $chart1['labels']) . '"'; ?>];
     const data = {
         labels: labels,
         datasets: [{
-            label: 'Data Bahan Baku Mitra <?= ucwords($chart1['mitra']); ?> (<?= $chart1['satuan']; ?>)',
-            data: [<?= $chart1['data']; ?>],
+            label: 'Data Bahan Baku Mitra',
+            data: [<?= implode(',', $chart1['data']); ?>],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(255, 159, 64, 0.2)',

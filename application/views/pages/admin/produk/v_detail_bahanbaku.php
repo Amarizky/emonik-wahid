@@ -18,7 +18,7 @@
     <!-- Basic initialization -->
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h5 class="card-title">Detail <?= $label; ?></h5>
+            <h5 class="card-title">Detail <?= $bahan; ?></h5>
             <div class="header-elements">
                 <div class="list-icons">
                     <?php if ($sub_title != "Trash") : ?>
@@ -42,11 +42,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><?= $mitra; ?></td>
-                        <td><?= $stok; ?></td>
-                    </tr>
+                    <?php for ($i = 0; $i < count($mitra); $i++) : ?>
+                        <tr>
+                            <td>1</td>
+                            <td><?= $mitra[$i]; ?></td>
+                            <td><?= $stok[$i]; ?></td>
+                        </tr>
+                    <?php endfor; ?>
                 </tbody>
             </table>
 
