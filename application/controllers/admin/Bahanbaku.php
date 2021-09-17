@@ -95,7 +95,6 @@ class Bahanbaku extends CI_Controller
 
 		curl_close($ch);
 
-
 		//csrf init
 		$csrf = array(
 			'name' => $this->security->get_csrf_token_name(),
@@ -136,8 +135,8 @@ class Bahanbaku extends CI_Controller
 		$input = $this->input->post(null, true);
 
 		$data = [
-
 			'mitra' => $input['mitra'],
+			'satuan' => 'ton',
 			'bahan1' => $input['bahan1'],
 			'bahan2' => $input['bahan2'],
 			'bahan3' => $input['bahan3'],
@@ -145,50 +144,29 @@ class Bahanbaku extends CI_Controller
 			'bahan5' => $input['bahan5'],
 			'bahan6' => $input['bahan6'],
 			'bahan7' => $input['bahan7'],
-			'stokbahan1' => $input['stokbahan1'],
-			'stokbahan2' => $input['stokbahan2'],
-			'stokbahan3' => $input['stokbahan3'],
-			'stokbahan4' => $input['stokbahan4'],
-			'stokbahan5' => $input['stokbahan5'],
-			'stokbahan6' => $input['stokbahan6'],
-			'stokbahan7' => $input['stokbahan7']
+			'stokbahan1' => ($input['kgton1'] == "kg" ? $input['stokbahan1'] / 1000 : $input['stokbahan1']),
+			'stokbahan2' => ($input['kgton2'] == "kg" ? $input['stokbahan2'] / 1000 : $input['stokbahan2']),
+			'stokbahan3' => ($input['kgton3'] == "kg" ? $input['stokbahan3'] / 1000 : $input['stokbahan3']),
+			'stokbahan4' => ($input['kgton4'] == "kg" ? $input['stokbahan4'] / 1000 : $input['stokbahan4']),
+			'stokbahan5' => ($input['kgton5'] == "kg" ? $input['stokbahan5'] / 1000 : $input['stokbahan5']),
+			'stokbahan6' => ($input['kgton6'] == "kg" ? $input['stokbahan6'] / 1000 : $input['stokbahan6']),
+			'stokbahan7' => ($input['kgton7'] == "kg" ? $input['stokbahan7'] / 1000 : $input['stokbahan7'])
 		];
 
-		if (!empty($input['is_reset'])) {
-			$data['password'] = password_hash(DEFAULT_PASS, PASSWORD_BCRYPT);
-		}
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apibahanbaku');
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'emonik-api-key: restapiemonik'
+		));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
-		//check apakah upload avatar?
-		if (isset($_FILES['avatar']['name']) && !empty($_FILES['avatar']['name'])) {
-			$config['upload_path']          =  FCPATH . 'assets/avatar/';
-			$config['allowed_types']        =  'jpg|jpeg|png|JPG|JPEG|PNG';
-			$config['encrypt_name']         =  TRUE;
-			$config['file_ext_tolower']     =  TRUE;
-			$config['detect_mime']			=  TRUE;
+		$update = json_decode(curl_exec($ch));
 
-			$this->upload->initialize($config);
-			if ($this->upload->do_upload('avatar')) {
-				$file_data = $this->upload->data();
-				// Resize Image
-				if ($file_data['file_size'] > 1024) {
-					resize_avatar('', $file_data['file_name']);
-				}
-				$file_name = $file_data['file_name'];
-				$data['avatar'] = $file_name;
-			} else {
-				$response = array(
-					'status' => 0,
-					'message' => 'Error upload. Detail: ' . $this->upload->display_errors(),
-					'return_url' => '#',
-					'csrf' => $csrf
-				);
-				echo json_encode($response);
-				die();
-			}
-		}
+		curl_close($ch);
 
-		$update = $this->crud->update('users', $data, ['id' => $kode]);
-		if ($update) {
+		if ($update->status) {
 			$response = array(
 				'status' => 1,
 				'message' => 'Perubahan data berhasil disimpan',
@@ -223,8 +201,8 @@ class Bahanbaku extends CI_Controller
 		$input = $this->input->post(null, true);
 
 		$data = [
-
 			'mitra' => $input['mitra'],
+			'satuan' => 'ton',
 			'bahan1' => $input['bahan1'],
 			'bahan2' => $input['bahan2'],
 			'bahan3' => $input['bahan3'],
@@ -232,13 +210,13 @@ class Bahanbaku extends CI_Controller
 			'bahan5' => $input['bahan5'],
 			'bahan6' => $input['bahan6'],
 			'bahan7' => $input['bahan7'],
-			'stokbahan1' => $input['stokbahan1'],
-			'stokbahan2' => $input['stokbahan2'],
-			'stokbahan3' => $input['stokbahan3'],
-			'stokbahan4' => $input['stokbahan4'],
-			'stokbahan5' => $input['stokbahan5'],
-			'stokbahan6' => $input['stokbahan6'],
-			'stokbahan7' => $input['stokbahan7']
+			'stokbahan1' => ($input['kgton1'] == "kg" ? ($input['stokbahan1'] / 1000) : $input['stokbahan1']),
+			'stokbahan2' => ($input['kgton2'] == "kg" ? ($input['stokbahan2'] / 1000) : $input['stokbahan2']),
+			'stokbahan3' => ($input['kgton3'] == "kg" ? ($input['stokbahan3'] / 1000) : $input['stokbahan3']),
+			'stokbahan4' => ($input['kgton4'] == "kg" ? ($input['stokbahan4'] / 1000) : $input['stokbahan4']),
+			'stokbahan5' => ($input['kgton5'] == "kg" ? ($input['stokbahan5'] / 1000) : $input['stokbahan5']),
+			'stokbahan6' => ($input['kgton6'] == "kg" ? ($input['stokbahan6'] / 1000) : $input['stokbahan6']),
+			'stokbahan7' => ($input['kgton7'] == "kg" ? ($input['stokbahan7'] / 1000) : $input['stokbahan7'])
 		];
 
 		// cek kode_produk udah ada belon 
@@ -252,6 +230,8 @@ class Bahanbaku extends CI_Controller
 
 		$result = json_decode(curl_exec($ch))->data;
 
+		curl_close($ch);
+
 		foreach ($result as $row) {
 			if ($row->mitra === $data['mitra']) {
 				$response = array(
@@ -264,8 +244,6 @@ class Bahanbaku extends CI_Controller
 			}
 		}
 
-		curl_close($ch);
-
 		// insert data
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apibahanbaku');
@@ -276,13 +254,13 @@ class Bahanbaku extends CI_Controller
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-		$insert = json_decode(curl_exec($ch))->status;
+		$insert = json_decode(curl_exec($ch));
 
 		curl_close($ch);
 
 		// $insert = $this->db->insert('users', $data);
 
-		if ($insert) {
+		if ($insert->status) {
 			$response = array(
 				'status' => 1,
 				'message' => 'Data baru berhasil disimpan',

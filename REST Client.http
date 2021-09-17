@@ -10,12 +10,6 @@ emonik-api-key: restapiemonik
 
 ###
 
-GET https://kahftekno.com/rest-emonik/index.php/apibahanbaku
-content-type: application/json
-emonik-api-key: restapiemonik
-
-###
-
 GET https://kahftekno.com/rest-emonik/index.php/apilaporanpo
 content-type: application/json
 emonik-api-key: restapiemonik
@@ -39,4 +33,35 @@ emonik-api-key: restapiemonik
     "jumlah": "100",
     "bisa_kirim": "2021-09-30",
     "diterima": "2021-10-01"
+}
+
+###
+
+GET https://kahftekno.com/rest-emonik/index.php/apibahanbaku
+content-type: application/json
+emonik-api-key: restapiemonik
+
+###
+
+PUT https://kahftekno.com/rest-emonik/index.php/apibahanbaku
+content-type: application/json
+emonik-api-key: restapiemonik
+
+{
+	"mitra": "adminn1",
+    "satuan": "ton",
+	"bahan1": "kotoran sapi",
+	"bahan2": "kotoran ayam",
+	"bahan3": "blotong",
+	"bahan4": "kampas kina",
+	"bahan5": "kaptan",
+	"bahan6": "dolomite",
+	"bahan7": "mixtro",
+	"stokbahan1": "10",
+	"stokbahan2": "10",
+	"stokbahan3": "10",
+	"stokbahan4": "1",
+	"stokbahan5": "1",
+	"stokbahan6": "0.1",
+	"stokbahan7": "0.1"
 }
