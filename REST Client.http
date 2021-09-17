@@ -1,0 +1,42 @@
+GET https://kahftekno.com/rest-emonik/index.php/apibahanbaku/stokbahan4
+content-type: application/json
+emonik-api-key: restapiemonik
+
+###
+
+GET https://kahftekno.com/rest-emonik/index.php/apiproduksi
+content-type: application/json
+emonik-api-key: restapiemonik
+
+###
+
+GET https://kahftekno.com/rest-emonik/index.php/apibahanbaku
+content-type: application/json
+emonik-api-key: restapiemonik
+
+###
+
+GET https://kahftekno.com/rest-emonik/index.php/apilaporanpo
+content-type: application/json
+emonik-api-key: restapiemonik
+
+###
+
+GET https://kahftekno.com/rest-emonik/index.php/apiuser
+content-type: application/json
+emonik-api-key: restapiemonik
+
+###
+
+PUT https://kahftekno.com/rest-emonik/index.php/apilaporanpo
+content-type: application/json
+emonik-api-key: restapiemonik
+
+{
+    "no_po": "092009882212",
+    "mitra": "admin",
+    "pengiriman": "2021-09-30",
+    "jumlah": "100",
+    "bisa_kirim": "2021-09-30",
+    "diterima": "2021-10-01"
+}

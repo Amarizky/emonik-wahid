@@ -35,10 +35,6 @@ class Laporanpo extends CI_Controller
 		);
 		$data['csrf'] = $csrf;
 
-		$data['action_form'] = site_url(current_role() . "/" . $this->menu_alias . "/add_process");
-		$data['html_form'] = $this->load->view('pages/' . $this->rolename . '/' . $this->menu_alias . '/v_form', $data, TRUE);
-		$data['html_add_new'] = $this->load->view('pages/' . $this->rolename . '/' . $this->menu_alias . '/v_add', $data, TRUE);
-
 		// request data ke api
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apilaporanpo');
@@ -51,7 +47,25 @@ class Laporanpo extends CI_Controller
 
 		curl_close($ch);
 
-		// $data['datatable'] = $this->crud->get('users', '*')->result();
+		// request data ke api user
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apiuser');
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'emonik-api-key: restapiemonik'
+		));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$data['datamitra'] = json_decode(curl_exec($ch))->data;
+
+		curl_close($ch);
+
+		foreach ($data['datamitra'] as $m) {
+			$data['mitras'][] = $m->username;
+		}
+
+		$data['action_form'] = site_url(current_role() . "/" . $this->menu_alias . "/add_process");
+		$data['html_form'] = $this->load->view('pages/' . $this->rolename . '/' . $this->menu_alias . '/v_form', $data, TRUE);
+		$data['html_add_new'] = $this->load->view('pages/' . $this->rolename . '/' . $this->menu_alias . '/v_add', $data, TRUE);
 
 		$this->panel_layout->load('layout/panel/v_layout', 'pages/' . $this->rolename . '/' . $this->menu_alias . '/v_index', $data);
 	}
@@ -94,6 +108,22 @@ class Laporanpo extends CI_Controller
 		}
 
 		curl_close($ch);
+
+		// request data ke api user
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apiuser');
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'emonik-api-key: restapiemonik'
+		));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$data['datamitra'] = json_decode(curl_exec($ch))->data;
+
+		curl_close($ch);
+
+		foreach ($data['datamitra'] as $m) {
+			$data['mitras'][] = $m->username;
+		}
 
 
 		//csrf init
@@ -138,18 +168,27 @@ class Laporanpo extends CI_Controller
 		$data = [
 			'no_po' => $input['no_po'],
 			'mitra' => $input['mitra'],
+			'jumlah' => $input['jumlah'],
 			'pengiriman' => $input['pengiriman'],
 			'bisa_kirim' => $input['bisa_kirim'],
 			'diterima' => $input['diterima'],
-
 		];
 
-		if (!empty($input['is_reset'])) {
-			$data['password'] = password_hash(DEFAULT_PASS, PASSWORD_BCRYPT);
-		}
+		// request data ke api user
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'https://kahftekno.com/rest-emonik/index.php/apilaporanpo');
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'emonik-api-key: restapiemonik'
+		));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
-		$update = $this->crud->update('diterima', $data, ['id' => $kode]);
-		if ($update) {
+		$update = json_decode(curl_exec($ch));
+
+		curl_close($ch);
+
+		if ($update->status == true) {
 			$response = array(
 				'status' => 1,
 				'message' => 'Perubahan data berhasil disimpan',
@@ -159,7 +198,8 @@ class Laporanpo extends CI_Controller
 		} else {
 			$response = array(
 				'status' => 0,
-				'message' => 'Perubahan data gagal disimpan!. Silahkan diulang kembali',
+				// 'message' => 'Perubahan data gagal disimpan!. Silahkan diulang kembali',
+				'message' => ucfirst($update->msg),
 				'return_url' => '#',
 				'csrf' => $csrf
 			);

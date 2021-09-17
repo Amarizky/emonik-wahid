@@ -10,7 +10,13 @@ $roles = get_data('roles', '*')->result();
             </div>
             <div class="form-group">
                 <label class="font-weight-semibold">Mitra</label>
-                <input type="text" class="form-control" id="mitra" name="mitra" placeholder="Masukkan nama mitra" value="<?php echo @$row->mitra; ?>" required>
+                <!-- <input list="mitras" class="form-control" id="mitra" name="mitra" placeholder="Masukkan nama mitra" value="<?php echo @$row->mitra; ?>" required> -->
+                <select name="mitra" id="mitra" class="form-control" required>
+                    <option value="" disabled selected>Pilih mitra</option>
+                    <?php foreach ($datamitra as $m) : ?>
+                        <option value="<?= $m->username; ?>" <?= (@$row->mitra == $m->username ? "selected" : ""); ?>><?= $m->username; ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="form-group">
                 <label class="font-weight-semibold">Pengiriman</label>
@@ -22,11 +28,11 @@ $roles = get_data('roles', '*')->result();
             </div>
             <div class="form-group">
                 <label class="font-weight-semibold">Bisa Kirim</label>
-                <input type="date" class="form-control" id="bisa_kirim" name="bisa_kirim" placeholder="tanggal kirim" value="<?php echo @$row->bisa_kirim; ?>" required>
+                <input type="date" class="form-control" id="bisa_kirim" name="bisa_kirim" placeholder="tanggal bisa kirim" value="<?php echo @$row->bisa_kirim; ?>" required>
             </div>
             <div class="form-group">
                 <label class="font-weight-semibold">Diterima</label>
-                <input type="date" class="form-control" id="diterima" name="diterima" placeholder="tanggal kirim" value="<?php echo @$row->diterima; ?>" required>
+                <input type="date" class="form-control" id="diterima" name="diterima" placeholder="tanggal diterima" value="<?php echo @$row->diterima; ?>" required>
             </div>
 
 
